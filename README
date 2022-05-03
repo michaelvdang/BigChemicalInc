@@ -1,0 +1,8 @@
+Initialized databases
+- run: bin/init.sh
+
+
+Start server for app
+- run: uvicorn main:app --reload
+
+
