@@ -20,7 +20,13 @@ FROM Employee e
 JOIN EmployeeDrugTest edt       ON e.employeeID=edt.employeeID
 JOIN DrugTest dt                ON edt.labTestID=dt.labTestID;
 
--- Sensor information: cannot locate sensor with their ID
+DROP VIEW IF EXISTS v_SensorInfo;
+CREATE VIEW v_SensorInfo AS
+SELECT sensorID, name, floor, roomID, description
+        sensor_type, date_installed
+FROM Sensor s
+JOIN Door d               ON s.doorID=d.doorID
+JOIN Building b           ON d.buildingID=b.buildingID;
 
 DROP VIEW IF EXISTS v_RepairedSensors;
 CREATE VIEW v_RepairedSensors AS
@@ -28,6 +34,19 @@ SELECT rs.sensorID AS sensorID, dateDown, dateRestored,
         t.name AS technician, rs.cause, rs.repair
 FROM RepairedSensors rs
 JOIN Technician t         ON rs.technicianID=t.technicianID;
+
+-- Employee accesses can't create view because we need wild cards
+-- use python for this
+SELECT e.name AS name, b.name AS building, roomID, d.doorID, 
+                  date, time, direction
+FROM SensorActivations sa
+JOIN Sensor s                   ON sa.sensorID=s.sensorID
+JOIN Door d                     ON s.doorID=d.doorID
+JOIN Building b                 ON d.buildingID=b.buildingID
+JOIN EmployeeBadge eb           ON eb.badgeID=sa.badgeID
+JOIN Employee e                 ON eb.employeeID=e.employeeID
+WHERE date BETWEEN '04-13-2022' AND '04-14-2022'
+ORDER BY date;
 
 DROP VIEW IF EXISTS v_EmployeeAccessRights;
 CREATE VIEW v_EmployeeAccessRights AS
