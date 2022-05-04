@@ -1,31 +1,38 @@
 -- QUESTION: store date as TEXT or DATETIME?
--- employee ID: 1-50, supervisorID 20, technicianID: 30, taxpayerID: 40
+-- employee ID: 1-50, supervisorID: 21, technicianID: 31, taxpayerID: 41, directorID: 51
 -- drug test ID: 51-100
--- badge ID: 100-200
--- sensor ID: 200-300
--- location ID: 300-400
--- room ID: 400-500
--- office ID: 500-600
--- building ID: 600-700
--- school ID: 700-800
+-- badge ID: 101-200
+-- sensor ID: 201-300
+-- location ID: 301-400
+-- room ID: 401-500
+-- office ID: 501-600
+-- building ID: 601-700
+-- school ID: 701-800
+
+
 DROP TABLE IF EXISTS Badge;
 CREATE TABLE Badge(
   badgeID INT PRIMARY KEY, 
-  mainGateTimes TIME,
+  -- mainGateTimes TIME,
   earliestEntry TIME,
   latestDeparture TIME
 );
-INSERT INTO Badge VALUES (51, '06:00', '06:00', '18:00');
+INSERT INTO Badge VALUES (101, '06:00', '18:00');
 
 DROP TABLE IF EXISTS Building;
 CREATE TABLE Building(
-  buildingID INT PRIMARY KEY,
-  floor INT,
-  roomID INT,
-  door TEXT,
-  FOREIGN KEY (roomID) REFERENCES TrackByRoom(roomID)
+  sensorID int,
+  buildingID int,
+  PRIMARY KEY (sensorID, buildingID),
+  FOREIGN KEY (sensorID) REFERENCES Sensor(sensorID),
+  FOREIGN KEY (buildingID) REFERENCES Building(buildingID)
 );
-INSERT INTO Building VALUES (601, 2, 401, 'WEST');
+INSERT INTO Building VALUES (201, 601);
+INSERT INTO Building VALUES (202, 601);
+INSERT INTO Building VALUES (203, 601);
+INSERT INTO Building VALUES (201, 602);
+INSERT INTO Building VALUES (202, 602);
+INSERT INTO Building VALUES (201, 603);
 
 DROP TABLE IF EXISTS BuildingAccessTimes;
 CREATE TABLE BuildingAccessTimes(
@@ -45,6 +52,17 @@ CREATE TABLE Director(
 );
 INSERT INTO Director VALUES (30, 'Chris Nolan', '02-22-2022', '04-10-2022');
 
+DROP TABLE IF EXISTS Door;
+CREATE TABLE Door(
+  buildingID INT,
+  floor INT,
+  roomID INT,
+  door TEXT,
+  PRIMARY KEY (buildingID, roomID, door)
+  FOREIGN KEY (roomID) REFERENCES TrackByRoom(roomID)
+);
+INSERT INTO Door VALUES (601, 2, 401, 'WEST');
+
 DROP TABLE IF EXISTS DrugTest;
 CREATE TABLE DrugTest(  
   labTestID INT PRIMARY KEY,
@@ -60,21 +78,68 @@ INSERT INTO DrugTest VALUES (51, '4-20-2022', 'THE LAB', 'Urine test', 1,
 DROP TABLE IF EXISTS Education;
 CREATE TABLE Education(
   schoolID INT PRIMARY KEY,
+  school_name VARCHAR(20),
   startDate DATE,
   endDate DATE,
   degree TEXT,
   GPA FLOAT
 );
-INSERT INTO Education VALUES (701, '08-01-2017', '30-05-2021', 
+INSERT INTO Education VALUES (701, 'CSU Fullerton', '08-01-2017', '30-05-2021', 
   'Bachelor in Computer Science', 2.45);
+
+DROP TABLE IF EXISTS Employee;
+CREATE TABLE Employee(
+  employeeID INT PRIMARY KEY,
+  locationID INT,
+  supervisorID INT, 
+  name VARCHAR(30),
+  title TEXT, --NOTE: 3NF
+  department VARCHAR(20),
+  taxpayer_id INT, 
+  securityClearance TEXT, -- 3NF
+  date_hired DATE,
+  phone CHAR(10),
+  dob DATE,
+  FOREIGN KEY(locationID) REFERENCES Location(locationID),
+  FOREIGN KEY(supervisorID) REFERENCES Supervisor(employeeID)
+);
+INSERT INTO Employee VALUES (1, 301, 21, 'Kyle', 'worker', 'Accounting', 41, 'LOW', '04-10-2022', '5551234567', '01-01-2000');
+INSERT INTO Employee VALUES (21, 301, 21, 'Eric', 'Supervisor', 'Accounting', 42, 'MID', '02-15-2020', '5551234568', '01-01-1990');
 
 DROP TABLE IF EXISTS EmployeeAccessRights;
 CREATE TABLE EmployeeAccessRights(
-  employeeID INT PRIMARY KEY,
-  securityClearance TEXT,
-  title TEXT
+  employeeID INT,
+  -- securityClearance TEXT,
+  -- title TEXT
+  roomID INT,
+  startTime TIME,
+  endTime TIME,
+  directorID INT, 
+  startDate DATE,
+  endDate DATE,
+  PRIMARY KEY (employeeID, roomID)
+  FOREIGN KEY (directorID) REFERENCES Director(employeeID)
 );
-INSERT INTO EmployeeAccessRights VALUES (1, 'TOP SECRET', 'Employee title');
+-- INSERT INTO EmployeeAccessRights VALUES (1, 'TOP SECRET', 'Employee title');
+INSERT INTO EmployeeAccessRights VALUES (1, 401, '7:00', '17:00',
+                                        51, '5-01-2022', '5-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (1, 402, '7:00', '17:00',
+                                        51, '5-01-2022', '5-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (1, 403, '7:00', '17:00',
+                                        51, '5-01-2022', '5-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (21, 401, '5:00', '19:00',
+                                        51, '5-01-2022', '5-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (21, 402, '5:00', '19:00',
+                                        51, '5-01-2022', '5-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (21, 403, '5:00', '19:00',
+                                        51, '5-01-2022', '5-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (51, 401, '0:00', '0:00',
+                                        51, '5-01-2022', '5-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (51, 402, '0:00', '0:00',
+                                        51, '5-01-2022', '5-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (51, 403, '0:00', '0:00',
+                                        51, '5-01-2022', '5-31-2022');
+
 
 DROP TABLE IF EXISTS EmployeeBadge;
 CREATE TABLE EmployeeBadge(
@@ -82,7 +147,7 @@ CREATE TABLE EmployeeBadge(
   badgeID INT,
   FOREIGN KEY(badgeID) REFERENCES Badge(badgeID)
 );
-INSERT INTO EmployeeBadge VALUES (1, 100);
+INSERT INTO EmployeeBadge VALUES (1, 101);
 
 DROP TABLE IF EXISTS EmployeeDrugTest;
 CREATE TABLE EmployeeDrugTest(
@@ -112,22 +177,6 @@ CREATE TABLE EmployeeLocation(
 );
 INSERT INTO EmployeeLocation VALUES (1, 301);
 
-DROP TABLE IF EXISTS Employees ;
-CREATE TABLE Employees(
-  employeeID INT PRIMARY KEY,
-  locationID INT,
-  supervisorID INT, 
-  title TEXT, --NOTE: 3NF
-  taxpayer_id INT, 
-  securityClearance TEXT, -- 3NF
-  date_hired DATE,
-  phone CHAR(10),
-  dob DATE,
-  FOREIGN KEY(locationID) REFERENCES Location(locationID),
-  FOREIGN KEY(supervisorID) REFERENCES Supervisor(supervisorID)
-);
-INSERT INTO Employees VALUES (1, 301, 21, 'worker', 41, 'LOW', '04-10-2022', '5551234567', '01-01-2000');
-
 DROP TABLE IF EXISTS Location;
 CREATE TABLE Location(
   locationID INT PRIMARY KEY,
@@ -152,10 +201,12 @@ CREATE TABLE RepairedSensors(
   technicianID INT,
   dateDown DATE,
   dateRestored DATE,
+  cause VARCHAR(30),
+  repair VARCHAR(30),
   FOREIGN KEY (technicianID) REFERENCES Technician(technicianID)
 );
-INSERT INTO RepairedSensors VALUES (201, 31, '4-12-2022', '4-15-2022');
-INSERT INTO RepairedSensors VALUES (202, 31, '4-14-2022', '4-20-2022');
+INSERT INTO RepairedSensors VALUES (201, 31, '4-12-2022', '4-15-2022', 'sensor fell out', 'reinstalled with glue');
+INSERT INTO RepairedSensors VALUES (202, 31, '4-14-2022', '4-20-2022', 'broken sensor', 'replaced');
 
 DROP TABLE IF EXISTS Sensor;
 CREATE TABLE Sensor(
@@ -164,6 +215,11 @@ CREATE TABLE Sensor(
   date_installed DATE
 );
 INSERT INTO Sensor VALUES (201, 'Door sensor', '4-04-2022');
+INSERT INTO Sensor VALUES (202, 'Door sensor', '4-04-2022');
+INSERT INTO Sensor VALUES (203, 'Door sensor', '4-04-2022');
+INSERT INTO Sensor VALUES (204, 'Door sensor', '4-04-2022');
+INSERT INTO Sensor VALUES (205, 'Door sensor', '4-04-2022');
+INSERT INTO Sensor VALUES (206, 'Door sensor', '4-04-2022');
 
 DROP TABLE IF EXISTS SensorActivations;
 CREATE TABLE SensorActivations(
@@ -183,32 +239,17 @@ INSERT INTO SensorActivations VALUES (201, 101, '4-12-2022', '16:04', 'out');
 INSERT INTO SensorActivations VALUES (201, 101, '4-15-2022', '7:15', 'in');
 INSERT INTO SensorActivations VALUES (201, 101, '4-12-2022', '16:05', 'out');
 
-DROP TABLE IF EXISTS SensoredBuilding;
-CREATE TABLE SensoredBuilding(
-  sensorID int,
-  buildingID int,
-  PRIMARY KEY (sensorID, buildingID),
-  FOREIGN KEY (sensorID) REFERENCES Sensor(sensorID),
-  FOREIGN KEY (buildingID) REFERENCES Building(buildingID)
-);
-INSERT INTO SensoredBuilding VALUES (201, 601);
-INSERT INTO SensoredBuilding VALUES (202, 601);
-INSERT INTO SensoredBuilding VALUES (203, 601);
-INSERT INTO SensoredBuilding VALUES (201, 602);
-INSERT INTO SensoredBuilding VALUES (202, 602);
-INSERT INTO SensoredBuilding VALUES (201, 603);
-
 DROP TABLE IF EXISTS Supervisor;
 CREATE TABLE Supervisor(
   employeeID INT,
-  supervisorID INT PRIMARY KEY, 
+  -- supervisorID INT PRIMARY KEY, 
   title VARCHAR(15),
   name VARCHAR(30),
   department VARCHAR(20),
   FOREIGN KEY(employeeID) REFERENCES Employees(employeeID)
 );
-INSERT INTO Supervisor VALUES (1, 21, 'Supervisor', 
-  'Super Visorman', 'Drug Enforcement');
+INSERT INTO Supervisor VALUES (21, 'Supervisor', 
+  'Eric', 'Drug Enforcement');
 
 DROP TABLE IF EXISTS Technician;
 CREATE TABLE Technician(

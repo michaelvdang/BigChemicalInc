@@ -1,0 +1,14 @@
+
+Added school_name to Education
+Added name to Employee
+Added department to Employee
+Removed supervisorID from Supervisor
+Added cause to RepairedSensor
+Added repair to RepairedSensor (what was done to repair the sensor)
+remove securityclearance from EmployeeAccessRights
+remove title 
+add roomID, startTime, endTime, directorID, startDate, endDate
+remove mainGateTimes from Badge
+change Building to Door
+in Door: PRIMARY KEY (buildingID, roomID, door)
+change SensoredBuilding to Building

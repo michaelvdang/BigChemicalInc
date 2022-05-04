@@ -1,4 +1,4 @@
-Initialized databases
+Initialized databases and create views
 - run: bin/init.sh
 
 
@@ -6,3 +6,6 @@ Start server for app
 - run: uvicorn main:app --reload
 
 
+Database
+in sqlite3 to see formatted table
+- run: .mode column 
