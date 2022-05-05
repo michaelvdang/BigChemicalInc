@@ -18,6 +18,11 @@ CREATE TABLE Badge(
   latestDeparture TIME
 );
 INSERT INTO Badge VALUES (101, '06:00', '18:00');
+INSERT INTO Badge VALUES (102, '06:00', '18:00');
+INSERT INTO Badge VALUES (103, '06:00', '18:00');
+INSERT INTO Badge VALUES (104, '06:00', '18:00');
+INSERT INTO Badge VALUES (105, '06:00', '18:00');
+
 
 DROP TABLE IF EXISTS Building;
 CREATE TABLE Building(
@@ -47,7 +52,7 @@ CREATE TABLE Director(
   directorStart DATE,
   directorEnd DATE
 );
-INSERT INTO Director VALUES (30, 'Chris Nolan', '02-22-2022', '04-10-2022');
+INSERT INTO Director VALUES (31, 'Kenny', '02-22-2022', '04-10-2022');
 
 DROP TABLE IF EXISTS Door;
 CREATE TABLE Door(
@@ -103,8 +108,10 @@ CREATE TABLE Employee(
   FOREIGN KEY(locationID) REFERENCES Location(locationID),
   FOREIGN KEY(supervisorID) REFERENCES Supervisor(employeeID)
 );
-INSERT INTO Employee VALUES (1, 301, 21, 'Kyle', 'worker', 'Accounting', 41, 'LOW', '04-10-2022', '5551234567', '01-01-2000');
-INSERT INTO Employee VALUES (21, 301, 21, 'Eric', 'Supervisor', 'Accounting', 42, 'MID', '02-15-2020', '5551234568', '01-01-1990');
+INSERT INTO Employee VALUES (1, 301, 21, 'Kyle', 'worker', 'Accounting', 41, 'LOW', '04-10-2022', '5551234567', '01-01-1997');
+INSERT INTO Employee VALUES (21, 301, 21, 'Eric', 'Supervisor', 'Accounting', 42, 'MID', '02-15-2020', '5551234568', '01-01-1998');
+INSERT INTO Employee VALUES (31, 301, 21, 'Stan', 'Technician', 'Technology', 43, 'MID', '03-15-2018', '5551234569', '01-01-1997');
+INSERT INTO Employee VALUES (51, 301, 21, 'Kenny', 'Director', 'Accounting', 44, 'HIGH', '02-22-2022', '5551234570', '01-01-1997');
 
 DROP TABLE IF EXISTS EmployeeAccessRights;
 CREATE TABLE EmployeeAccessRights(
@@ -148,6 +155,9 @@ CREATE TABLE EmployeeBadge(
   FOREIGN KEY(badgeID) REFERENCES Badge(badgeID)
 );
 INSERT INTO EmployeeBadge VALUES (1, 101);
+INSERT INTO EmployeeBadge VALUES (21, 102);
+INSERT INTO EmployeeBadge VALUES (31, 103);
+INSERT INTO EmployeeBadge VALUES (51, 104);
 
 DROP TABLE IF EXISTS EmployeeDrugTest;
 CREATE TABLE EmployeeDrugTest(
@@ -233,14 +243,22 @@ CREATE TABLE SensorActivations(
   direction VARCHAR(5),
   PRIMARY KEY (sensorID, badgeID, date, time, direction)
 );
-INSERT INTO SensorActivations VALUES (201, 101, '04-12-2022', '7:12', 'in');
+INSERT INTO SensorActivations VALUES (201, 101, '04-12-2022', '07:12', 'in');
 INSERT INTO SensorActivations VALUES (201, 101, '04-12-2022', '16:02', 'out');
-INSERT INTO SensorActivations VALUES (201, 101, '04-13-2022', '7:13', 'in');
+INSERT INTO SensorActivations VALUES (201, 101, '04-13-2022', '07:13', 'in');
 INSERT INTO SensorActivations VALUES (201, 101, '04-13-2022', '16:03', 'out');
-INSERT INTO SensorActivations VALUES (201, 101, '04-14-2022', '7:14', 'in');
+INSERT INTO SensorActivations VALUES (201, 101, '04-14-2022', '07:14', 'in');
 INSERT INTO SensorActivations VALUES (201, 101, '04-14-2022', '16:04', 'out');
-INSERT INTO SensorActivations VALUES (201, 101, '04-15-2022', '7:15', 'in');
-INSERT INTO SensorActivations VALUES (201, 101, '04-12-2022', '16:05', 'out');
+INSERT INTO SensorActivations VALUES (201, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivations VALUES (201, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivations VALUES (201, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivations VALUES (201, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivations VALUES (201, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivations VALUES (201, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivations VALUES (201, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivations VALUES (201, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivations VALUES (201, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivations VALUES (201, 102, '04-21-2022', '16:05', 'out');
 
 DROP TABLE IF EXISTS Supervisor;
 CREATE TABLE Supervisor(

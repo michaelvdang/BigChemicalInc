@@ -35,8 +35,7 @@ SELECT rs.sensorID AS sensorID, dateDown, dateRestored,
 FROM RepairedSensors rs
 JOIN Technician t         ON rs.technicianID=t.technicianID;
 
--- Employee accesses can't create view because we need wild cards
--- use python for this
+CREATE VIEW v_EmployeeAccesses AS
 SELECT e.name AS name, b.name AS building, roomID, d.doorID, 
                   date, time, direction
 FROM SensorActivations sa
@@ -45,8 +44,10 @@ JOIN Door d                     ON s.doorID=d.doorID
 JOIN Building b                 ON d.buildingID=b.buildingID
 JOIN EmployeeBadge eb           ON eb.badgeID=sa.badgeID
 JOIN Employee e                 ON eb.employeeID=e.employeeID
-WHERE date BETWEEN '04-13-2022' AND '04-14-2022'
-ORDER BY date;
+ORDER BY e.name, date
+;
+-- WHERE date BETWEEN '04-13-2022' AND '04-14-2022'
+-- ORDER BY date;
 
 DROP VIEW IF EXISTS v_EmployeeAccessRights;
 CREATE VIEW v_EmployeeAccessRights AS
