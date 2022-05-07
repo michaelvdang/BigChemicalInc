@@ -4,6 +4,7 @@ from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import contextlib
+import json
 
 app = FastAPI()
 
@@ -29,9 +30,18 @@ class TestResult(BaseModel):
   labTestID: int
   results: bool
   comments: str
+  # def __init__(self, result: list):
+  #   self.employeeID = result[0]
+  #   self.date = result[1]
+  #   self.lab_used = result[2]
+  #   self.test_used = result[3]
+  #   self.labTestID = result[4]
+  #   self.results = result[5]
+  #   self.comments = result[6]
 
 async def get_db():
   with contextlib.closing(sqlite3.connect('var/BigChemicalInc.db', check_same_thread=False)) as db:
+    db.row_factory = sqlite3.Row
     yield db
 
 @app.get("/")
@@ -39,28 +49,47 @@ def read_root():
   return {"Hello": "World"}
 
 # get employee info
+# requires sqlite3.Row
 @app.get("/employees/{employeeID}")
 def get_employees(employeeID: int, db: sqlite3.Connection = Depends(get_db)):
   # cur = db.cursor()
-  employee = db.execute('SELECT * FROM v_EmployeeInfo WHERE employeeID=?', 
-                  [employeeID])
-  return {'employee' : employee.fetchone()}
+  rows = db.execute('SELECT * FROM v_EmployeeInfo WHERE employeeID=?', 
+                  [employeeID]).fetchall()
+  results = []
+  for row in rows:
+    results.append(dict(zip(row.keys(), row)))
+  return results
 
 # get employee test results
+# must create TestResult class
 @app.get("/employees/{employeeID}/drug-test-result/")
 def get_employee_drug_test_result(employeeID: int, db: sqlite3.Connection = Depends(get_db)):
   # cur = db.cursor()
-  results = db.execute("SELECT * FROM v_DrugTestResults WHERE employeeID=?", 
-                  [employeeID])
-  return {'test_results' : results.fetchall()}
+  rows = db.execute("SELECT * FROM v_DrugTestResult WHERE employeeID=?", 
+                  [employeeID]).fetchall()
+  results = []
+  for row in rows:
+    # uses BaseModel
+    results.append(TestResult(
+        employeeID=row[0], 
+        date=row[1], 
+        lab_used=row[2], 
+        test_used=row[3], 
+        abTestID=row[4], 
+        results=row[5], 
+        comments=row[6]))
+    # results.append(TestResult(row))
+    # results.append(dict(zip(row.keys(), row)))
+  return results
 
 # get sensor info
 @app.get("/sensors/{sensorID}")
 def get_sensor_info(sensorID: int, db: sqlite3.Connection = Depends(get_db)):
   # cur = db.cursor()
-
+  cur = db.cursor()
   sensor = db.execute("SELECT * FROM v_SensorInfo WHERE sensorID=?",
                         [sensorID])
+                
   return {'sensor' : sensor.fetchone()}
   
 # get repaired sensor info
