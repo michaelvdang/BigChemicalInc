@@ -15,3 +15,6 @@ add doorID to Door PRIMARY KEY (doorID)
 change SensoredBuilding to Building
 add name to Building
 remove sensorID from Building
+
+new EmployeeEducation(employeeID(PK), degree(PK), school_name, startDate, endDate, GPA)
+remove Education

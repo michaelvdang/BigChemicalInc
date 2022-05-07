@@ -8,7 +8,7 @@
 -- room ID: 401-500
 -- office ID: 501-600
 -- building ID: 601-700
--- school ID: 701-800
+-- degree ID: 701-800
 
 DROP TABLE IF EXISTS Badge;
 CREATE TABLE Badge(
@@ -90,17 +90,19 @@ INSERT INTO DrugTest VALUES (55, '04-22-2022', 'THE LAB', 'Urine test', 1,
 INSERT INTO DrugTest VALUES (56, '04-23-2022', 'THE LAB', 'Urine test', 1, 
   'Hella positive');
 
-DROP TABLE IF EXISTS Education;
-CREATE TABLE Education(
-  schoolID INT PRIMARY KEY,
-  school_name VARCHAR(20),
-  startDate DATE,
-  endDate DATE,
-  degree TEXT,
-  GPA FLOAT
-);
-INSERT INTO Education VALUES (701, 'CSU Fullerton', '08-01-2017', '30-05-2021', 
-  'Bachelor in Computer Science', 2.45);
+-- DROP TABLE IF EXISTS Education;
+-- CREATE TABLE Education(
+--   educationID INT PRIMARY KEY,
+--   school_name VARCHAR(20),
+--   startDate DATE,
+--   endDate DATE,
+--   degree TEXT,
+--   GPA FLOAT
+-- );
+-- INSERT INTO Education VALUES (701, 'CSU Fullerton', '08-01-2017', '30-05-2021', 
+--   'Masters in Computer Science', 2.45);
+-- INSERT INTO Education VALUES (702, 'CSU Long Beach', '08-01-2013', '30-05-2017', 
+--   'Bachelor in Computer Science', 2.75);
 
 DROP TABLE IF EXISTS Employee;
 CREATE TABLE Employee(
@@ -186,12 +188,23 @@ INSERT INTO EmployeeDrugTest VALUES (31, 56);
 DROP TABLE IF EXISTS EmployeeEducation;
 CREATE TABLE EmployeeEducation(
   employeeID INT,
-  schoolID INT,
-  PRIMARY KEY (employeeID, schoolID),
-  FOREIGN KEY (employeeID) REFERENCES Employee(employeeID),
-  FOREIGN KEY (schoolID) REFERENCES Education(schoolID)
+  degree VARCHAR(30),
+  school_name VARCHAR(20),
+  startDate DATE,
+  endDate DATE,
+  GPA FLOAT,
+  -- schoolID INT,
+  PRIMARY KEY (employeeID, degree),
+  FOREIGN KEY (employeeID) REFERENCES Employee(employeeID)
 );
-INSERT INTO EmployeeEducation VALUES (1, 701);
+INSERT INTO EmployeeEducation VALUES (1, 'Bachelor in Computer Science',
+        'CSU Fullerton', '08-01-2014', '05-30-2022', 2.50);
+INSERT INTO EmployeeEducation VALUES (1, 'Masters in Computer Science',
+        'CSU Fullerton', '08-01-2014', '05-30-2022', 2.60);
+INSERT INTO EmployeeEducation VALUES (1, 'PhD in Computer Science',
+        'CSU Fullerton', '08-01-2014', '05-30-2022', 2.70);
+INSERT INTO EmployeeEducation VALUES (1, 'MBA',
+        'CSU Fullerton', '08-01-2014', '05-30-2022', 2.80);
 
 DROP TABLE IF EXISTS EmployeeLocation;
 CREATE TABLE EmployeeLocation(

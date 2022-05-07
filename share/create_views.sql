@@ -5,10 +5,10 @@ SELECT e.employeeID AS employeeID, e.name AS name,
       address, city, state, zip, phone, s.name AS [supervisor], 
       school_name, startDate, endDate, degree, GPA
 FROM Employee e 
-LEFT JOIN Location l           ON e.locationID=l.locationID
-LEFT JOIN EmployeeEducation ee ON e.employeeID=ee.employeeID
-LEFT JOIN Education ed         ON ee.schoolID=ed.schoolID
-LEFT JOIN Supervisor s         ON e.supervisorID=s.employeeID
+LEFT JOIN Location l                ON e.locationID=l.locationID
+LEFT JOIN EmployeeEducation ee      ON e.employeeID=ee.employeeID
+-- LEFT JOIN Education ed              ON ee.schoolID=ed.schoolID
+LEFT JOIN Supervisor s              ON e.supervisorID=s.employeeID
 ;
 
 DROP VIEW IF EXISTS v_DrugTestResult;
