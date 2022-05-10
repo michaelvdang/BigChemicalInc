@@ -9,3 +9,39 @@ Start server for app
 Database
 in sqlite3 to see formatted table
 - run: .mode column 
+
+Add new Employee with Education
+{
+  "employee": {
+    "employeeID": 2,
+    "supervisorID": 21,
+    "name": "Butters",
+    "title": "worker",
+    "department": "Admin",
+    "taxpayer_id": 45,
+    "securityClearance": "LOW",
+    "date_hired": "02-23-2022",
+    "phone": "5551234567",
+    "dob": "01-01-1997"
+  },
+  "address": {
+    "address": "12345 Main St",
+    "city": "Anaheim",
+    "state": "CA",
+    "zip": "92123"
+  },
+  "education": {
+    "degrees": [
+{"school_name" : "CSU Fullerton",
+"startDate" : "08-30-2017",
+"endDate" : "05-25-2020",
+"degree_name" : "Bachelor in Computer Science",
+"GPA" : 3.57},
+{"school_name" : "CSU Long Beach",
+"startDate" : "08-30-2020",
+"endDate" : "05-25-2022",
+"degree_name" : "PhD in Computer Science",
+"GPA" : 3.85}
+]
+  }
+}

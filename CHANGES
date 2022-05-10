@@ -18,3 +18,8 @@ remove sensorID from Building
 
 new EmployeeEducation(employeeID(PK), degree(PK), school_name, startDate, endDate, GPA)
 remove Education
+
+changed Location table to Address
+changed locationID to employeeID in Address
+
+changed EmployeeEducation to Education

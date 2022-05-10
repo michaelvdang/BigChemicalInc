@@ -2,11 +2,11 @@ DROP VIEW IF EXISTS v_EmployeeInfo;
 CREATE VIEW v_EmployeeInfo AS
 SELECT e.employeeID AS employeeID, e.name AS name, 
       taxpayer_id, date_hired, e.department, 
-      address, city, state, zip, phone, s.name AS [supervisor], 
-      school_name, startDate, endDate, degree, GPA
+      address, city, state, zip, phone, s.name AS [supervisor]
+      -- ,school_name, startDate, endDate, degree, GPA
 FROM Employee e 
-LEFT JOIN Location l                ON e.locationID=l.locationID
-LEFT JOIN EmployeeEducation ee      ON e.employeeID=ee.employeeID
+LEFT JOIN Address l                ON e.employeeID=l.employeeID
+-- LEFT JOIN EmployeeEducation ee      ON e.employeeID=ee.employeeID
 -- LEFT JOIN Education ed              ON ee.schoolID=ed.schoolID
 LEFT JOIN Supervisor s              ON e.supervisorID=s.employeeID
 ;
@@ -22,7 +22,7 @@ LEFT JOIN DrugTest dt                ON edt.labTestID=dt.labTestID;
 
 DROP VIEW IF EXISTS v_SensorInfo;
 CREATE VIEW v_SensorInfo AS
-SELECT sensorID, name, floor, roomID, description
+SELECT sensorID, name, floor, roomID, description,
         sensor_type, date_installed
 FROM Sensor s
 LEFT JOIN Door d               ON s.doorID=d.doorID
@@ -31,7 +31,7 @@ LEFT JOIN Building b           ON d.buildingID=b.buildingID;
 DROP VIEW IF EXISTS v_RepairedSensor;
 CREATE VIEW v_RepairedSensor AS
 SELECT rs.sensorID AS sensorID, dateDown, dateRestored,
-        t.name AS technician, rs.cause, rs.repair
+        t.name AS technician_name, rs.cause, rs.repair
 FROM RepairedSensor rs
 LEFT JOIN Technician t         ON rs.technicianID=t.technicianID;
 
