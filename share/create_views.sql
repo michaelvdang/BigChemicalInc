@@ -17,8 +17,9 @@ SELECT e.employeeID AS employeeID,
       date, lab_used, test_used, dt.labTestID as labTestID,
       results, comments
 FROM Employee e
-LEFT JOIN EmployeeDrugTest edt       ON e.employeeID=edt.employeeID
-LEFT JOIN DrugTest dt                ON edt.labTestID=dt.labTestID;
+-- LEFT JOIN EmployeeDrugTest edt       ON e.employeeID=edt.employeeID
+-- LEFT JOIN DrugTest dt                ON edt.labTestID=dt.labTestID;
+LEFT JOIN DrugTest dt                   ON dt.employeeID=e.employeeID;
 
 DROP VIEW IF EXISTS v_SensorInfo;
 CREATE VIEW v_SensorInfo AS

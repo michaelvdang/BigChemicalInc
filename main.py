@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import contextlib
 import json
-from models.my_models import Degree, Education, Employee, Address, RepairedSensor, Sensor, TestResult
+from models.my_models import Degree, Education, Employee, Address, RepairedSensor, Sensor, DrugTest
 
 app = FastAPI()
 
@@ -132,7 +132,7 @@ def update_employee_info(employeeID: int,
     db.commit()
   except sqlite3.IntegrityError:
       return "ERROR: sqlite3.IntegrityError"
-  return Response(None, status_code=200)
+  return Response(None, status_code=204)
 
 
 @app.post("/employees/{employeeID}")
@@ -190,60 +190,142 @@ def add_employee_info(employee: Employee,
 
 # get employee test results
 # must create TestResult class
-@app.get("/employees/{employeeID}/drug-test-result/")
+@app.get("/employees/{employeeID}/drug-test-results/")
 def get_employee_drug_test_result(employeeID: int, db: sqlite3.Connection = Depends(get_db)):
-  # cur = db.cursor()
   rows = db.execute("SELECT * FROM v_DrugTestResult WHERE employeeID=?", 
                   [employeeID]).fetchall()
-  results = []
-  for row in rows:
-    # uses BaseModel
-    results.append(TestResult(
-        employeeID=row['employeeID'], 
-        date=row['date'],
-        lab_used=row['lab_used'],
-        test_used=row['test_used'],
-        labTestID=row['labTestID'],
-        results=row['results'],
-        comments=row['comments']))
-    # results.append(TestResult(row))
-    # results.append(dict(zip(row.keys(), row)))
-  return {'drug_test_results' : results}
+  return {'drug_test_results' : rows}
+
+
+@app.put("/employees/{employeeID}/drug-test-results/{labTestID}")
+def update_employee_drug_test_result(employeeID: int,
+                                      labTestID: int,
+                                      drugtest: DrugTest, 
+                                      db: sqlite3.Connection = Depends(get_db)):
+  try:
+    db.execute('''
+        UPDATE DrugTest
+        SET date=?, lab_used=?, test_used=?, results=?, comments=?
+        WHERE employeeID=? AND labTestID=?
+        ''',
+        [
+          drugtest.date,
+          drugtest.lab_used,
+          drugtest.test_used,
+          drugtest.results,
+          drugtest.comments,
+          employeeID,
+          labTestID
+        ])
+    db.commit()
+  except sqlite3.IntegrityError:
+    return "ERROR: SQLite Integrity Error"
+  return Response(None, status_code=204)
+
+@app.post("/employees/{employeeID}/drug-test-results/")
+def add_employee_drug_test_result(employeeID: int,
+                                  drugtest: DrugTest, 
+                                  db: sqlite3.Connection = Depends(get_db)):
+  try:
+    db.execute('INSERT INTO DrugTest VALUES (?,?,?,?,?,?,?)',
+        [
+          drugtest.employeeID,
+          drugtest.labTestID,
+          drugtest.date,
+          drugtest.lab_used,
+          drugtest.test_used,
+          drugtest.results,
+          drugtest.comments
+        ])
+    db.commit()
+  except sqlite3.IntegrityError:
+    return "ERROR: SQLite Integrity Error"
+  return Response(None, status_code=201)
+
 
 # get sensor info
 @app.get("/sensors/{sensorID}")
 def get_sensor_info(sensorID: int, db: sqlite3.Connection = Depends(get_db)):
   row = db.execute("SELECT * FROM v_SensorInfo WHERE sensorID=?",
                         [sensorID]).fetchone()
-  s = Sensor(
-    sensorID=row['sensorID'],
-    name=row['name'],
-    floor=row['floor'],
-    roomID=row['roomID'],
-    description=row['description'],
-    sensor_type=row['sensor_type'],
-    date_installed=row['date_installed']
-  )      
-  return s
+  return {'sensors' : row}
+
+@app.put("/sensors/{sensorID}")
+def update_sensor_info(sensorID: int,
+                        sensor: Sensor,
+                        db: sqlite3.Connection = Depends(get_db)):
+  db.execute('''
+      UPDATE Sensor 
+      SET doorID=?, sensor_type=?, date_installed=?
+      WHERE sensorID=?
+      ''',
+      [
+          sensor.doorID,
+          sensor.sensor_type,
+          sensor.date_installed,
+          sensorID
+      ])
+  db.commit()
+  return Response(None, status_code=204)
+  
+@app.post("/sensors")
+def add_sensor_info(sensor: Sensor,
+                    db: sqlite3.Connection = Depends(get_db)):
+  try:
+    db.execute('INSERT INTO Sensor VALUES (?,?,?,?)',
+        [
+          sensor.sensorID,
+          sensor.doorID,
+          sensor.sensor_type,
+          sensor.date_installed
+        ])
+    db.commit()
+  except sqlite3.IntegrityError:
+    return "ERROR: sqlite3 Integrity Error"
+  return Response(None, status_code=201)
   
 # get repaired sensor info
 @app.get("/repaired-sensors/{sensorID}")
 def get_repaired_sensor_info(sensorID: int, db: sqlite3.Connection = Depends(get_db)):
   rows = db.execute("SELECT * FROM v_RepairedSensor WHERE sensorID=?",
                           [sensorID]).fetchall()
-  results = []
-  for row in rows:
-    s = RepairedSensor(
-      sensorID=row['sensorID'],
-      dateDown=row['dateDown'],
-      dateRestored=row['dateRestored'],
-      technician_name=row['technician_name'],
-      cause=row['cause'],
-      repair=row['repair']
-    )
-    results.append(s)
+  return {'repaired_sensors' : rows}
 
-  return {'sensors' : results}
+@app.put("repaired-sensor/{sensorID}")
+def update_repaired_sensor_info(sensorID: int, 
+                                  repaired_sensor: RepairedSensor,
+                                  db: sqlite3.Connection = Depends(get_db)):
+  db.execute('''
+      UPDATE RepairedSensor
+      SET technicianID=?, dateDown=?, dateRestored=?, cause=?, repair=?
+      WHERE sensorID=?
+      ''',
+      [
+        repaired_sensor.technicianID,
+        repaired_sensor.dateDown,
+        repaired_sensor.dateRestored,
+        repaired_sensor.cause,
+        repaired_sensor.repair,
+        sensorID
+      ])
+
+@app.post("/repaired-sensors")
+def add_repaired_sensor_info(repaired_sensor: RepairedSensor, 
+                             db: sqlite3.Connection = Depends(get_db)):
+  try:
+    db.execute('INSERT INTO RepairedSensor VALUES (?,?,?,?,?,?)',
+        [
+          repaired_sensor.sensorID,
+          repaired_sensor.technicianID,
+          repaired_sensor.dateDown,
+          repaired_sensor.dateRestored,
+          repaired_sensor.cause,
+          repaired_sensor.repair
+        ])
+    db.commit()
+  except sqlite3.IntegrityError:
+    return 'ERROR: sqlite3 Integrity Error'
+  return Response(None, status_code=201)
   
 # get employee accesses
 @app.get("/employee-accesses/{employeeID}")#?startDate={startDate}&endDate={endDate}")

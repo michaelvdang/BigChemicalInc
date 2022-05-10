@@ -23,3 +23,6 @@ changed Location table to Address
 changed locationID to employeeID in Address
 
 changed EmployeeEducation to Education
+
+Removed EmployeeDrugTest (many to one relationship with Employee)
+Added employeeID to DrugTest

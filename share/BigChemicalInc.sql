@@ -79,25 +79,27 @@ INSERT INTO Door VALUES (253, 601, 2, 401, 'SOUTH');
 INSERT INTO Door VALUES (254, 601, 2, 401, 'EAST');
 
 DROP TABLE IF EXISTS DrugTest;
-CREATE TABLE DrugTest(  
-  labTestID INT PRIMARY KEY,
+CREATE TABLE DrugTest(
+  employeeID INT,
+  labTestID INT,
   date DATE,
   lab_used TEXT,
   test_used TEXT,
   results BOOLEAN,
-  comments TEXT
+  comments TEXT,
+  PRIMARY KEY (employeeID, labTestID)
 );
-INSERT INTO DrugTest VALUES (51, '04-20-2022', 'THE LAB', 'Urine test', 0, 
+INSERT INTO DrugTest VALUES (1, 51, '04-20-2022', 'THE LAB', 'Urine test', 0, 
   'No comment');
-INSERT INTO DrugTest VALUES (52, '04-21-2022', 'THE LAB', 'Urine test', 0, 
+INSERT INTO DrugTest VALUES (1, 52, '04-21-2022', 'THE LAB', 'Urine test', 0, 
   'No comment');
-INSERT INTO DrugTest VALUES (53, '04-22-2022', 'THE LAB', 'Urine test', 1, 
+INSERT INTO DrugTest VALUES (1, 53, '04-22-2022', 'THE LAB', 'Urine test', 1, 
   'Hella positive');
-INSERT INTO DrugTest VALUES (54, '04-21-2022', 'THE LAB', 'Urine test', 1, 
+INSERT INTO DrugTest VALUES (2, 54, '04-21-2022', 'THE LAB', 'Urine test', 1, 
   'Hella positive');
-INSERT INTO DrugTest VALUES (55, '04-22-2022', 'THE LAB', 'Urine test', 1, 
+INSERT INTO DrugTest VALUES (2, 55, '04-22-2022', 'THE LAB', 'Urine test', 1, 
   'Hella positive');
-INSERT INTO DrugTest VALUES (56, '04-23-2022', 'THE LAB', 'Urine test', 1, 
+INSERT INTO DrugTest VALUES (2, 56, '04-23-2022', 'THE LAB', 'Urine test', 1, 
   'Hella positive');
 
 DROP TABLE IF EXISTS Education;
@@ -214,7 +216,7 @@ INSERT INTO Office VALUES (501, '5552345678', '5552345688');
 DROP TABLE IF EXISTS RepairedSensor;
 CREATE TABLE RepairedSensor(
   sensorID INT PRIMARY KEY,
-  technicianID INT,
+  technicianID INT NOT NULL,
   dateDown DATE,
   dateRestored DATE,
   cause VARCHAR(30),

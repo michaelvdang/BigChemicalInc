@@ -36,7 +36,7 @@ class Address(BaseModel):
   zip: str
 
 
-class TestResult(BaseModel):
+class DrugTest(BaseModel):
   employeeID: int
   date: str
   lab_used: str
@@ -47,17 +47,15 @@ class TestResult(BaseModel):
 
 class Sensor(BaseModel):
   sensorID: int
-  name: str
-  floor: int
-  roomID: int
-  description: str
+  doorID: int
   sensor_type: str
   date_installed: str
 
 class RepairedSensor(BaseModel):
   sensorID: int
+  technicianID: int
   dateDown: str
   dateRestored: str
-  technician_name: str
+  # technician_name: str
   cause: str
   repair: str
