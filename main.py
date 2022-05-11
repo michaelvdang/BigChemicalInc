@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import contextlib
 import json
-from models.my_models import Degree, Education, Employee, Address, RepairedSensor, Sensor, DrugTest
+from models.my_models import Degree, Education, Employee, Address, SensorRepair, Sensor, DrugTest
 
 app = FastAPI()
 
@@ -244,11 +244,10 @@ def add_employee_drug_test_result(employeeID: int,
 
 
 # get sensor info
-@app.get("/sensors/{sensorID}")
-def get_sensor_info(sensorID: int, db: sqlite3.Connection = Depends(get_db)):
-  row = db.execute("SELECT * FROM v_SensorInfo WHERE sensorID=?",
-                        [sensorID]).fetchone()
-  return {'sensors' : row}
+@app.get("/sensors")
+def get_sensor_info(db: sqlite3.Connection = Depends(get_db)):
+  rows = db.execute("SELECT * FROM v_SensorInfo").fetchall()
+  return {'sensors' : rows}
 
 @app.put("/sensors/{sensorID}")
 def update_sensor_info(sensorID: int,
@@ -285,42 +284,42 @@ def add_sensor_info(sensor: Sensor,
   return Response(None, status_code=201)
   
 # get repaired sensor info
-@app.get("/repaired-sensors/{sensorID}")
-def get_repaired_sensor_info(sensorID: int, db: sqlite3.Connection = Depends(get_db)):
-  rows = db.execute("SELECT * FROM v_RepairedSensor WHERE sensorID=?",
+@app.get("/sensor-repairs/{sensorID}")
+def get_sensor_repair_info(sensorID: int, db: sqlite3.Connection = Depends(get_db)):
+  rows = db.execute("SELECT * FROM v_SensorRepair WHERE sensorID=?",
                           [sensorID]).fetchall()
-  return {'repaired_sensors' : rows}
+  return {'sensor_repairs' : rows}
 
-@app.put("repaired-sensor/{sensorID}")
-def update_repaired_sensor_info(sensorID: int, 
-                                  repaired_sensor: RepairedSensor,
+@app.put("/sensor-repairs/{sensorID}")
+def update_sensor_repair_info(sensorID: int, 
+                                  sensor_repair: SensorRepair,
                                   db: sqlite3.Connection = Depends(get_db)):
   db.execute('''
-      UPDATE RepairedSensor
+      UPDATE SensorRepair
       SET technicianID=?, dateDown=?, dateRestored=?, cause=?, repair=?
       WHERE sensorID=?
       ''',
       [
-        repaired_sensor.technicianID,
-        repaired_sensor.dateDown,
-        repaired_sensor.dateRestored,
-        repaired_sensor.cause,
-        repaired_sensor.repair,
+        sensor_repair.technicianID,
+        sensor_repair.dateDown,
+        sensor_repair.dateRestored,
+        sensor_repair.cause,
+        sensor_repair.repair,
         sensorID
       ])
 
-@app.post("/repaired-sensors")
-def add_repaired_sensor_info(repaired_sensor: RepairedSensor, 
+@app.post("/sensor-repairs")
+def add_sensor_repair_info(sensor_repair: SensorRepair, 
                              db: sqlite3.Connection = Depends(get_db)):
   try:
-    db.execute('INSERT INTO RepairedSensor VALUES (?,?,?,?,?,?)',
+    db.execute('INSERT INTO SensorRepair VALUES (?,?,?,?,?,?)',
         [
-          repaired_sensor.sensorID,
-          repaired_sensor.technicianID,
-          repaired_sensor.dateDown,
-          repaired_sensor.dateRestored,
-          repaired_sensor.cause,
-          repaired_sensor.repair
+          sensor_repair.sensorID,
+          sensor_repair.technicianID,
+          sensor_repair.dateDown,
+          sensor_repair.dateRestored,
+          sensor_repair.cause,
+          sensor_repair.repair
         ])
     db.commit()
   except sqlite3.IntegrityError:

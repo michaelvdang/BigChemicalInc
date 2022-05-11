@@ -20,6 +20,7 @@ CREATE TABLE Address(
 );
 INSERT INTO Address VALUES (1, '1234 Main St', 'Fullerton', 'CA', '92345');
 
+
 DROP TABLE IF EXISTS Badge;
 CREATE TABLE Badge(
   badgeID INT PRIMARY KEY, 
@@ -41,10 +42,11 @@ CREATE TABLE Building(
   FOREIGN KEY (buildingID) REFERENCES Building(buildingID)
 );
 INSERT INTO Building VALUES (601, 'Administration');
-INSERT INTO Building VALUES (602, 'Factory');
-INSERT INTO Building VALUES (603, 'Garage');
-INSERT INTO Building VALUES (604, 'Warehouse');
-INSERT INTO Building VALUES (605, 'Parking');
+INSERT INTO Building VALUES (622, 'Factory');
+INSERT INTO Building VALUES (633, 'Garage');
+INSERT INTO Building VALUES (644, 'Warehouse');
+INSERT INTO Building VALUES (655, 'Parking');
+
 
 DROP TABLE IF EXISTS BuildingAccessTime;
 CREATE TABLE BuildingAccessTime(
@@ -62,7 +64,8 @@ CREATE TABLE Director(
   directorStart DATE,
   directorEnd DATE
 );
-INSERT INTO Director VALUES (31, 'Kenny', '02-22-2022', '04-10-2022');
+INSERT INTO Director VALUES (51, 'Kenny', '02-22-2022', '04-10-2022');
+
 
 DROP TABLE IF EXISTS Door;
 CREATE TABLE Door(
@@ -70,13 +73,22 @@ CREATE TABLE Door(
   buildingID INT,
   floor INT,
   roomID INT,
-  description VARCHAR(20),
-  FOREIGN KEY (roomID) REFERENCES TrackByRoom(roomID)
+  description VARCHAR(20)
+  -- FOREIGN KEY (roomID) REFERENCES TrackByRoom(roomID)
 );
-INSERT INTO Door VALUES (251, 601, 2, 401, 'WEST');
-INSERT INTO Door VALUES (252, 601, 2, 401, 'NORTH');
-INSERT INTO Door VALUES (253, 601, 2, 401, 'SOUTH');
-INSERT INTO Door VALUES (254, 601, 2, 401, 'EAST');
+INSERT INTO Door VALUES (251, 601, 1, 401, 'WEST');
+INSERT INTO Door VALUES (252, 601, 1, 401, 'NORTH');
+INSERT INTO Door VALUES (253, 601, 1, 401, 'SOUTH');
+INSERT INTO Door VALUES (254, 601, 1, 401, 'EAST');
+INSERT INTO Door VALUES (255, 601, 1, 402, 'WEST');
+INSERT INTO Door VALUES (256, 601, 1, 403, 'EAST');
+INSERT INTO Door VALUES (257, 601, 1, 404, 'SOUTH');
+INSERT INTO Door VALUES (258, 622, 1, 422, 'NORTH');
+INSERT INTO Door VALUES (259, 633, 1, 433, 'NORTH');
+INSERT INTO Door VALUES (260, 644, 1, 444, 'WEST');
+INSERT INTO Door VALUES (261, 655, 1, 455, 'EAST');
+INSERT INTO Door VALUES (262, 666, 1, 466, 'SOUTH');
+
 
 DROP TABLE IF EXISTS DrugTest;
 CREATE TABLE DrugTest(
@@ -94,13 +106,14 @@ INSERT INTO DrugTest VALUES (1, 51, '04-20-2022', 'THE LAB', 'Urine test', 0,
 INSERT INTO DrugTest VALUES (1, 52, '04-21-2022', 'THE LAB', 'Urine test', 0, 
   'No comment');
 INSERT INTO DrugTest VALUES (1, 53, '04-22-2022', 'THE LAB', 'Urine test', 1, 
-  'Hella positive');
+  'Tested positive');
 INSERT INTO DrugTest VALUES (2, 54, '04-21-2022', 'THE LAB', 'Urine test', 1, 
-  'Hella positive');
+  'Tested positive');
 INSERT INTO DrugTest VALUES (2, 55, '04-22-2022', 'THE LAB', 'Urine test', 1, 
-  'Hella positive');
+  'Tested positive');
 INSERT INTO DrugTest VALUES (2, 56, '04-23-2022', 'THE LAB', 'Urine test', 1, 
-  'Hella positive');
+  'Tested positive');
+
 
 DROP TABLE IF EXISTS Education;
 CREATE TABLE Education(
@@ -122,6 +135,7 @@ INSERT INTO Education VALUES (1, 'PhD in Computer Science',
         'CSU Fullerton', '08-01-2014', '05-30-2022', 2.70);
 INSERT INTO Education VALUES (1, 'MBA',
         'CSU Fullerton', '08-01-2014', '05-30-2022', 2.80);
+
 
 DROP TABLE IF EXISTS Employee;
 CREATE TABLE Employee(
@@ -145,6 +159,7 @@ INSERT INTO Employee VALUES (21, 21, 'Eric', 'Supervisor', 'Accounting', 42, 'MI
 INSERT INTO Employee VALUES (31, 21, 'Stan', 'Technician', 'Technology', 43, 'MID', '03-15-2018', '5551234569', '01-01-1997');
 INSERT INTO Employee VALUES (51, 21, 'Kenny', 'Director', 'Accounting', 44, 'HIGH', '02-22-2022', '5551234570', '01-01-1997');
 
+
 DROP TABLE IF EXISTS EmployeeAccessRights;
 CREATE TABLE EmployeeAccessRights(
   employeeID INT,
@@ -159,24 +174,29 @@ CREATE TABLE EmployeeAccessRights(
   PRIMARY KEY (employeeID, roomID)
   FOREIGN KEY (directorID) REFERENCES Director(employeeID)
 );
--- INSERT INTO EmployeeAccessRights VALUES (1, 'TOP SECRET', 'Employee title');
-INSERT INTO EmployeeAccessRights VALUES (1, 401, '7:00', '17:00',
+INSERT INTO EmployeeAccessRights VALUES (1, 401, '08:15', '16:45',
+                                        51, '02-01-2022', '08-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (1, 402, '07:30', '17:30',
+                                        51, '04-01-2022', '07-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (1, 403, '07:00', '17:00',
                                         51, '05-01-2022', '05-31-2022');
-INSERT INTO EmployeeAccessRights VALUES (1, 402, '7:00', '17:00',
+INSERT INTO EmployeeAccessRights VALUES (1, 404, '07:30', '17:30',
+                                        51, '05-01-2022', '05-15-2022');
+INSERT INTO EmployeeAccessRights VALUES (1, 422, '07:45', '15:45',
+                                        51, '04-01-2022', '07-31-2022');
+INSERT INTO EmployeeAccessRights VALUES (1, 433, '07:15', '16:15',
                                         51, '05-01-2022', '05-31-2022');
-INSERT INTO EmployeeAccessRights VALUES (1, 403, '7:00', '17:00',
+INSERT INTO EmployeeAccessRights VALUES (21, 401, '05:00', '19:00',
                                         51, '05-01-2022', '05-31-2022');
-INSERT INTO EmployeeAccessRights VALUES (21, 401, '5:00', '19:00',
+INSERT INTO EmployeeAccessRights VALUES (21, 422, '05:00', '19:00',
                                         51, '05-01-2022', '05-31-2022');
-INSERT INTO EmployeeAccessRights VALUES (21, 402, '5:00', '19:00',
+INSERT INTO EmployeeAccessRights VALUES (21, 433, '05:00', '19:00',
                                         51, '05-01-2022', '05-31-2022');
-INSERT INTO EmployeeAccessRights VALUES (21, 403, '5:00', '19:00',
+INSERT INTO EmployeeAccessRights VALUES (51, 401, '00:00', '00:00',
                                         51, '05-01-2022', '05-31-2022');
-INSERT INTO EmployeeAccessRights VALUES (51, 401, '0:00', '0:00',
+INSERT INTO EmployeeAccessRights VALUES (51, 422, '00:00', '00:00',
                                         51, '05-01-2022', '05-31-2022');
-INSERT INTO EmployeeAccessRights VALUES (51, 402, '0:00', '0:00',
-                                        51, '05-01-2022', '05-31-2022');
-INSERT INTO EmployeeAccessRights VALUES (51, 403, '0:00', '0:00',
+INSERT INTO EmployeeAccessRights VALUES (51, 433, '00:00', '00:00',
                                         51, '05-01-2022', '05-31-2022');
 
 
@@ -205,6 +225,7 @@ INSERT INTO EmployeeDrugTest VALUES (31, 54);
 INSERT INTO EmployeeDrugTest VALUES (31, 55);
 INSERT INTO EmployeeDrugTest VALUES (31, 56);
 
+
 DROP TABLE IF EXISTS Office;
 CREATE TABLE Office(
   officeID INT PRIMARY KEY,
@@ -213,8 +234,9 @@ CREATE TABLE Office(
 );
 INSERT INTO Office VALUES (501, '5552345678', '5552345688');
 
-DROP TABLE IF EXISTS RepairedSensor;
-CREATE TABLE RepairedSensor(
+
+DROP TABLE IF EXISTS SensorRepair;
+CREATE TABLE SensorRepair(
   sensorID INT PRIMARY KEY,
   technicianID INT NOT NULL,
   dateDown DATE,
@@ -223,8 +245,8 @@ CREATE TABLE RepairedSensor(
   repair VARCHAR(30),
   FOREIGN KEY (technicianID) REFERENCES Technician(technicianID)
 );
-INSERT INTO RepairedSensor VALUES (201, 31, '04-12-2022', '04-15-2022', 'sensor fell out', 'reinstalled with glue');
-INSERT INTO RepairedSensor VALUES (202, 31, '04-14-2022', '04-20-2022', 'broken sensor', 'replaced');
+INSERT INTO SensorRepair VALUES (201, 31, '04-12-2022', '04-15-2022', 'sensor fell out', 'reinstalled with glue');
+INSERT INTO SensorRepair VALUES (202, 31, '04-14-2022', '04-20-2022', 'broken sensor', 'replaced');
 
 DROP TABLE IF EXISTS Sensor;
 CREATE TABLE Sensor(
@@ -234,13 +256,19 @@ CREATE TABLE Sensor(
   date_installed DATE,
   FOREIGN KEY (doorID) REFERENCES Door(doorID)
 );
-INSERT INTO Sensor VALUES (201, 251, 'Door sensor', '04-04-2022');
-INSERT INTO Sensor VALUES (202, 252, 'Door sensor', '04-04-2022');
-INSERT INTO Sensor VALUES (203, 253, 'Door sensor', '04-04-2022');
-INSERT INTO Sensor VALUES (204, 254, 'Door sensor', '04-04-2022');
-INSERT INTO Sensor VALUES (205, 255, 'Door sensor', '04-04-2022');
-INSERT INTO Sensor VALUES (206, 256, 'Door sensor', '04-04-2022');
-INSERT INTO Sensor VALUES (207, 257, 'Door sensor', '04-04-2022');
+INSERT INTO Sensor VALUES (201, 251, 'Door sensor', '04-04-2021');
+INSERT INTO Sensor VALUES (202, 252, 'Door sensor', '07-23-2021');
+INSERT INTO Sensor VALUES (203, 253, 'Door sensor', '01-11-2021');
+INSERT INTO Sensor VALUES (204, 254, 'Door sensor', '04-04-2021');
+INSERT INTO Sensor VALUES (205, 255, 'Door sensor', '07-11-2021');
+INSERT INTO Sensor VALUES (206, 256, 'Door sensor', '04-04-2021');
+INSERT INTO Sensor VALUES (207, 257, 'Door sensor', '01-23-2021');
+INSERT INTO Sensor VALUES (208, 258, 'Door sensor', '04-04-2021');
+INSERT INTO Sensor VALUES (209, 259, 'Door sensor', '04-11-2021');
+INSERT INTO Sensor VALUES (210, 260, 'Door sensor', '07-23-2021');
+INSERT INTO Sensor VALUES (211, 261, 'Door sensor', '01-04-2021');
+INSERT INTO Sensor VALUES (212, 262, 'Door sensor', '04-11-2021');
+
 
 DROP TABLE IF EXISTS SensorActivation;
 CREATE TABLE SensorActivation(
@@ -267,6 +295,135 @@ INSERT INTO SensorActivation VALUES (201, 102, '04-20-2022', '07:14', 'in');
 INSERT INTO SensorActivation VALUES (201, 102, '04-20-2022', '16:04', 'out');
 INSERT INTO SensorActivation VALUES (201, 102, '04-21-2022', '07:15', 'in');
 INSERT INTO SensorActivation VALUES (201, 102, '04-21-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (202, 101, '04-12-2022', '07:12', 'in');
+INSERT INTO SensorActivation VALUES (202, 101, '04-12-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (202, 101, '04-13-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (202, 101, '04-13-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (202, 101, '04-14-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (202, 101, '04-14-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (202, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (202, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (202, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivation VALUES (202, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (202, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (202, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (202, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (202, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (202, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (202, 102, '04-21-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (203, 101, '04-12-2022', '07:12', 'in');
+INSERT INTO SensorActivation VALUES (203, 101, '04-12-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (203, 101, '04-13-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (203, 101, '04-13-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (203, 101, '04-14-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (203, 101, '04-14-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (203, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (203, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (203, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivation VALUES (203, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (203, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (203, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (203, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (203, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (203, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (203, 102, '04-21-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (204, 101, '04-12-2022', '07:12', 'in');
+INSERT INTO SensorActivation VALUES (204, 101, '04-12-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (204, 101, '04-13-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (204, 101, '04-13-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (204, 101, '04-14-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (204, 101, '04-14-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (204, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (204, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (204, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivation VALUES (204, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (204, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (204, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (204, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (204, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (204, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (204, 102, '04-21-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (205, 101, '04-12-2022', '07:12', 'in');
+INSERT INTO SensorActivation VALUES (205, 101, '04-12-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (205, 101, '04-13-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (205, 101, '04-13-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (205, 101, '04-14-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (205, 101, '04-14-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (205, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (205, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (205, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivation VALUES (205, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (205, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (205, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (205, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (205, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (205, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (205, 102, '04-21-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (206, 101, '04-12-2022', '07:12', 'in');
+INSERT INTO SensorActivation VALUES (206, 101, '04-12-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (206, 101, '04-13-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (206, 101, '04-13-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (206, 101, '04-14-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (206, 101, '04-14-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (206, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (206, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (206, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivation VALUES (206, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (206, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (206, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (206, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (206, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (206, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (206, 102, '04-21-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (207, 101, '04-12-2022', '07:12', 'in');
+INSERT INTO SensorActivation VALUES (207, 101, '04-12-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (207, 101, '04-13-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (207, 101, '04-13-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (207, 101, '04-14-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (207, 101, '04-14-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (207, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (207, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (207, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivation VALUES (207, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (207, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (207, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (207, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (207, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (207, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (207, 102, '04-21-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (208, 101, '04-12-2022', '07:12', 'in');
+INSERT INTO SensorActivation VALUES (208, 101, '04-12-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (208, 101, '04-13-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (208, 101, '04-13-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (208, 101, '04-14-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (208, 101, '04-14-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (208, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (208, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (208, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivation VALUES (208, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (208, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (208, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (208, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (208, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (208, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (208, 102, '04-21-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (209, 101, '04-12-2022', '07:12', 'in');
+INSERT INTO SensorActivation VALUES (209, 101, '04-12-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (209, 101, '04-13-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (209, 101, '04-13-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (209, 101, '04-14-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (209, 101, '04-14-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (209, 101, '04-15-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (209, 101, '04-15-2022', '16:05', 'out');
+INSERT INTO SensorActivation VALUES (209, 102, '04-18-2022', '07:05', 'in');
+INSERT INTO SensorActivation VALUES (209, 102, '04-18-2022', '16:02', 'out');
+INSERT INTO SensorActivation VALUES (209, 102, '04-19-2022', '07:13', 'in');
+INSERT INTO SensorActivation VALUES (209, 102, '04-19-2022', '16:03', 'out');
+INSERT INTO SensorActivation VALUES (209, 102, '04-20-2022', '07:14', 'in');
+INSERT INTO SensorActivation VALUES (209, 102, '04-20-2022', '16:04', 'out');
+INSERT INTO SensorActivation VALUES (209, 102, '04-21-2022', '07:15', 'in');
+INSERT INTO SensorActivation VALUES (209, 102, '04-21-2022', '16:05', 'out');
+
 
 DROP TABLE IF EXISTS Supervisor;
 CREATE TABLE Supervisor(
@@ -280,6 +437,7 @@ CREATE TABLE Supervisor(
 INSERT INTO Supervisor VALUES (21, 'Supervisor', 
   'Eric', 'Drug Enforcement');
 
+
 DROP TABLE IF EXISTS Technician;
 CREATE TABLE Technician(
   employeeID INT,
@@ -292,6 +450,7 @@ CREATE TABLE Technician(
 );
 INSERT INTO Technician VALUES (31, 31, 'Electrician', 'Jamie Foxx', 'Broken sensor', 'Repaired broken sensor');
 
+
 DROP TABLE IF EXISTS TrackingLog;
 CREATE TABLE TrackingLog(
   employeeID INT PRIMARY KEY,
@@ -301,6 +460,7 @@ CREATE TABLE TrackingLog(
   FOREIGN KEY (officeID) REFERENCES Office(officeID)
 );
 INSERT INTO TrackingLog VALUES (1, 1000, '04-01-2022', '04-10-2022');
+
 
 DROP TABLE IF EXISTS TrackByRoom;
 CREATE TABLE TrackByRoom(

@@ -51,7 +51,7 @@ class Sensor(BaseModel):
   sensor_type: str
   date_installed: str
 
-class RepairedSensor(BaseModel):
+class SensorRepair(BaseModel):
   sensorID: int
   technicianID: int
   dateDown: str

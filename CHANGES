@@ -3,8 +3,9 @@ Added school_name to Education
 Added name to Employee
 Added department to Employee
 Removed supervisorID from Supervisor
-Added cause to RepairedSensor
-Added repair to RepairedSensor (what was done to repair the sensor)
+Changed RepairedSensor to SensorRepair
+Added cause to SensorRepair
+Added repair to SensorRepair (what was done to repair the sensor)
 from EmployeeAccessRights
   remove securityclearance 
   remove title 

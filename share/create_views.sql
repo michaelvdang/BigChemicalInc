@@ -29,11 +29,11 @@ FROM Sensor s
 LEFT JOIN Door d               ON s.doorID=d.doorID
 LEFT JOIN Building b           ON d.buildingID=b.buildingID;
 
-DROP VIEW IF EXISTS v_RepairedSensor;
-CREATE VIEW v_RepairedSensor AS
+DROP VIEW IF EXISTS v_SensorRepair;
+CREATE VIEW v_SensorRepair AS
 SELECT rs.sensorID AS sensorID, dateDown, dateRestored,
         t.name AS technician_name, rs.cause, rs.repair
-FROM RepairedSensor rs
+FROM SensorRepair rs
 LEFT JOIN Technician t         ON rs.technicianID=t.technicianID;
 
 CREATE VIEW v_EmployeeAccess AS
@@ -53,11 +53,13 @@ ORDER BY e.name, date
 
 DROP VIEW IF EXISTS v_EmployeeAccessRights;
 CREATE VIEW v_EmployeeAccessRights AS
-SELECT e.employeeID AS employeeID, e.name AS name, securityClearance, title, 
+SELECT DISTINCT e.employeeID AS employeeID, e.name AS name, securityClearance, title, 
       eb.badgeID AS badgeID, earliestEntry, latestDeparture, 
-      buildingID, floor, ear.roomID AS roomID
-FROM Employee e 
-JOIN EmployeeAccessRights ear     ON e.employeeID=ear.employeeID
+      buildingID, floor, ear.roomID AS roomID,
+      startTime, endTime, di.name AS [director_name], startDate, endDate
+FROM EmployeeAccessRights ear
+JOIN Employee e                   ON e.employeeID=ear.employeeID
 JOIN EmployeeBadge eb             ON e.employeeID=eb.employeeID
 JOIN Badge ba                     ON eb.badgeID=ba.badgeID
-JOIN Door d                       ON ear.roomID=d.roomID;
+JOIN Door do                      ON ear.roomID=do.roomID
+LEFT JOIN Director di             ON di.employeeID=ear.directorID;
