@@ -9,6 +9,7 @@ LEFT JOIN Address l                ON e.employeeID=l.employeeID
 -- LEFT JOIN EmployeeEducation ee      ON e.employeeID=ee.employeeID
 -- LEFT JOIN Education ed              ON ee.schoolID=ed.schoolID
 LEFT JOIN Supervisor s              ON e.supervisorID=s.employeeID
+WHERE e.deleted=false
 ;
 
 DROP VIEW IF EXISTS v_DrugTestResult;
@@ -19,22 +20,27 @@ SELECT e.employeeID AS employeeID,
 FROM Employee e
 -- LEFT JOIN EmployeeDrugTest edt       ON e.employeeID=edt.employeeID
 -- LEFT JOIN DrugTest dt                ON edt.labTestID=dt.labTestID;
-LEFT JOIN DrugTest dt                   ON dt.employeeID=e.employeeID;
+LEFT JOIN DrugTest dt                   ON dt.employeeID=e.employeeID
+WHERE e.deleted=false
+;
 
 DROP VIEW IF EXISTS v_SensorInfo;
 CREATE VIEW v_SensorInfo AS
-SELECT sensorID, name, floor, roomID, description,
-        sensor_type, date_installed
+SELECT sensorID, name AS building_name, floor, s.doorID AS doorID, roomID, 
+            description, sensor_type, date_installed
 FROM Sensor s
 LEFT JOIN Door d               ON s.doorID=d.doorID
-LEFT JOIN Building b           ON d.buildingID=b.buildingID;
+LEFT JOIN Building b           ON d.buildingID=b.buildingID
+WHERE s.deleted=false
+;
 
 DROP VIEW IF EXISTS v_SensorRepair;
 CREATE VIEW v_SensorRepair AS
 SELECT rs.sensorID AS sensorID, dateDown, dateRestored,
         t.name AS technician_name, rs.cause, rs.repair
 FROM SensorRepair rs
-LEFT JOIN Technician t         ON rs.technicianID=t.technicianID;
+LEFT JOIN Technician t         ON rs.technicianID=t.technicianID
+;
 
 CREATE VIEW v_EmployeeAccess AS
 SELECT e.employeeID AS employeeID, e.name AS name, 
@@ -46,6 +52,7 @@ JOIN Door d                     ON s.doorID=d.doorID
 JOIN Building b                 ON d.buildingID=b.buildingID
 JOIN EmployeeBadge eb           ON eb.badgeID=sa.badgeID
 JOIN Employee e                 ON eb.employeeID=e.employeeID
+WHERE e.deleted=false
 ORDER BY e.name, date
 ;
 -- WHERE date BETWEEN '04-13-2022' AND '04-14-2022'
@@ -62,4 +69,6 @@ JOIN Employee e                   ON e.employeeID=ear.employeeID
 JOIN EmployeeBadge eb             ON e.employeeID=eb.employeeID
 JOIN Badge ba                     ON eb.badgeID=ba.badgeID
 JOIN Door do                      ON ear.roomID=do.roomID
-LEFT JOIN Director di             ON di.employeeID=ear.directorID;
+LEFT JOIN Director di             ON di.employeeID=ear.directorID
+WHERE e.deleted=false
+;

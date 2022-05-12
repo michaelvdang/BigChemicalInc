@@ -5,7 +5,6 @@ from fastapi import Body, FastAPI, Depends, Response
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import contextlib
-import json
 from models.my_models import Degree, Education, Employee, Address, SensorRepair, Sensor, DrugTest
 
 app = FastAPI()
@@ -40,9 +39,12 @@ def get_employee_info(employeeID: int,
                       db: sqlite3.Connection = Depends(get_db)):
   employee_info = db.execute('SELECT * FROM v_EmployeeInfo WHERE employeeID=?', 
                                 [employeeID]).fetchone()
-  employee_education = db.execute('SELECT * FROM Education WHERE employeeID=?', 
+  if employee_info:
+    employee_education = db.execute('SELECT * FROM Education WHERE employeeID=?',
                                 [employeeID]).fetchall()
-  return {'employee_info': employee_info, 'employee_education': employee_education}
+    return {'employee_info': employee_info, 'employee_education': employee_education}
+  else:
+    return {Response(None, status_code=404)}
   row = db.execute('SELECT * FROM v_EmployeeInfo WHERE employeeID=?', 
                   [employeeID]).fetchone()
   e = Employee(
@@ -87,7 +89,7 @@ def update_employee_info(employeeID: int,
         UPDATE Employee
         SET supervisorID=?,
             name=?, title=?, department=?, taxpayer_id=?, securityClearance=?,
-            date_hired=?, phone=?, dob=?
+            date_hired=?, phone=?, dob=?, deleted=false
         WHERE employeeID=?
         ''',
         [
@@ -144,8 +146,8 @@ def add_employee_info(employee: Employee,
     db.execute('''
         INSERT INTO Employee(employeeID, supervisorID,
                     name, title, department, taxpayer_id, securityClearance,
-                    date_hired, phone, dob) 
-        VALUES (?,?,?,?,?,?,?,?,?,?)
+                    date_hired, phone, dob, deleted) 
+        VALUES (?,?,?,?,?,?,?,?,?,?, false)
         ''',
         [
           employee.employeeID,
@@ -187,6 +189,12 @@ def add_employee_info(employee: Employee,
   except sqlite3.IntegrityError:
     return "ERROR: this employeeID already exists"
   return Response(None, status_code=201)
+
+@app.delete("/employees/{employeeID}")
+def delete_employee(employeeID: int, db: sqlite3.Connection = Depends(get_db)):
+  db.execute('UPDATE Employee SET deleted=1 WHERE employeeID=?', [employeeID])
+  db.commit()
+  return
 
 # get employee test results
 # must create TestResult class
@@ -282,6 +290,7 @@ def add_sensor_info(sensor: Sensor,
   except sqlite3.IntegrityError:
     return "ERROR: sqlite3 Integrity Error"
   return Response(None, status_code=201)
+
   
 # get repaired sensor info
 @app.get("/sensor-repairs/{sensorID}")
@@ -327,8 +336,8 @@ def add_sensor_repair_info(sensor_repair: SensorRepair,
   return Response(None, status_code=201)
   
 # get employee accesses
-@app.get("/employee-accesses/{employeeID}")#?startDate={startDate}&endDate={endDate}")
-def get_employee_accesses(employeeID: int, 
+@app.get("/tracking-log/{employeeID}")#?startDate={startDate}&endDate={endDate}")
+def get_tracking_log(employeeID: int, 
                           startDate: str,
                           endDate: str,
                           db: sqlite3.Connection = Depends(get_db)):
@@ -338,8 +347,19 @@ def get_employee_accesses(employeeID: int,
                             AND date 
                             BETWEEN ? AND ?""",
                           [employeeID, startDate, endDate])
-  return {'accesses' : accesses.fetchall()}
-  
+  office_info = db.execute('''SELECT o.officeID AS officeID, o.phone, cellPhone 
+                              FROM Employee e
+                              JOIN TrackingLog tl ON tl.employeeID=e.employeeID
+                              JOIN Office o       ON o.officeID=tl.officeID
+                              WHERE e.employeeID=?
+                            ''', [employeeID])
+  return {'office_info': office_info.fetchone(), 'accesses': accesses.fetchall(), }
+
+@app.get("/sensor-activations")
+def get_sensor_activations(db: sqlite3.Connection = Depends(get_db)):
+  sensor_activations = db.execute('SELECT * FROM SensorActivation')
+  return {'sensor_activations' : sensor_activations.fetchall()}
+
 # get employee access rights
 @app.get("/employee-access-rights/{employeeID}")
 def get_employee_access_rights(employeeID: int, db: sqlite3.Connection = Depends(get_db)):

@@ -46,6 +46,7 @@ INSERT INTO Building VALUES (622, 'Factory');
 INSERT INTO Building VALUES (633, 'Garage');
 INSERT INTO Building VALUES (644, 'Warehouse');
 INSERT INTO Building VALUES (655, 'Parking');
+INSERT INTO Building VALUES (666, 'Warehouse 2');
 
 
 DROP TABLE IF EXISTS BuildingAccessTime;
@@ -150,14 +151,15 @@ CREATE TABLE Employee(
   date_hired DATE,
   phone CHAR(10),
   dob DATE,
+  deleted BOOLEAN,
   FOREIGN KEY(employeeID) REFERENCES Address(employeeID),
   FOREIGN KEY(supervisorID) REFERENCES Supervisor(employeeID),
   UNIQUE (employeeID, taxpayer_id)
 );
-INSERT INTO Employee VALUES (1, 21, 'Kyle', 'worker', 'Accounting', 41, 'LOW', '04-10-2022', '5551234567', '01-01-1997');
-INSERT INTO Employee VALUES (21, 21, 'Eric', 'Supervisor', 'Accounting', 42, 'MID', '02-15-2020', '5551234568', '01-01-1998');
-INSERT INTO Employee VALUES (31, 21, 'Stan', 'Technician', 'Technology', 43, 'MID', '03-15-2018', '5551234569', '01-01-1997');
-INSERT INTO Employee VALUES (51, 21, 'Kenny', 'Director', 'Accounting', 44, 'HIGH', '02-22-2022', '5551234570', '01-01-1997');
+INSERT INTO Employee VALUES (1, 21, 'Kyle', 'worker', 'Accounting', 41, 'LOW', '04-10-2022', '5551234567', '01-01-1997', false);
+INSERT INTO Employee VALUES (21, 21, 'Eric', 'Supervisor', 'Accounting', 42, 'MID', '02-15-2020', '5551234568', '01-01-1998', false);
+INSERT INTO Employee VALUES (31, 21, 'Stan', 'Technician', 'Technology', 43, 'MID', '03-15-2018', '5551234569', '01-01-1997', false);
+INSERT INTO Employee VALUES (51, 21, 'Kenny', 'Director', 'Accounting', 44, 'HIGH', '02-22-2022', '5551234570', '01-01-1997', false);
 
 
 DROP TABLE IF EXISTS EmployeeAccessRights;
@@ -254,20 +256,21 @@ CREATE TABLE Sensor(
   doorID INT, 
   sensor_type VARCHAR(20),
   date_installed DATE,
+  deleted BOOLEAN,
   FOREIGN KEY (doorID) REFERENCES Door(doorID)
 );
-INSERT INTO Sensor VALUES (201, 251, 'Door sensor', '04-04-2021');
-INSERT INTO Sensor VALUES (202, 252, 'Door sensor', '07-23-2021');
-INSERT INTO Sensor VALUES (203, 253, 'Door sensor', '01-11-2021');
-INSERT INTO Sensor VALUES (204, 254, 'Door sensor', '04-04-2021');
-INSERT INTO Sensor VALUES (205, 255, 'Door sensor', '07-11-2021');
-INSERT INTO Sensor VALUES (206, 256, 'Door sensor', '04-04-2021');
-INSERT INTO Sensor VALUES (207, 257, 'Door sensor', '01-23-2021');
-INSERT INTO Sensor VALUES (208, 258, 'Door sensor', '04-04-2021');
-INSERT INTO Sensor VALUES (209, 259, 'Door sensor', '04-11-2021');
-INSERT INTO Sensor VALUES (210, 260, 'Door sensor', '07-23-2021');
-INSERT INTO Sensor VALUES (211, 261, 'Door sensor', '01-04-2021');
-INSERT INTO Sensor VALUES (212, 262, 'Door sensor', '04-11-2021');
+INSERT INTO Sensor VALUES (201, 251, 'Door sensor', '04-04-2021', false);
+INSERT INTO Sensor VALUES (202, 252, 'Door sensor', '07-23-2021', false);
+INSERT INTO Sensor VALUES (203, 253, 'Door sensor', '01-11-2021', false);
+INSERT INTO Sensor VALUES (204, 254, 'Door sensor', '04-04-2021', false);
+INSERT INTO Sensor VALUES (205, 255, 'Door sensor', '07-11-2021', false);
+INSERT INTO Sensor VALUES (206, 256, 'Door sensor', '04-04-2021', false);
+INSERT INTO Sensor VALUES (207, 257, 'Door sensor', '01-23-2021', false);
+INSERT INTO Sensor VALUES (208, 258, 'Door sensor', '04-04-2021', false);
+INSERT INTO Sensor VALUES (209, 259, 'Door sensor', '04-11-2021', false);
+INSERT INTO Sensor VALUES (210, 260, 'Door sensor', '07-23-2021', false);
+INSERT INTO Sensor VALUES (211, 261, 'Door sensor', '01-04-2021', false);
+INSERT INTO Sensor VALUES (212, 262, 'Door sensor', '04-11-2021', false);
 
 
 DROP TABLE IF EXISTS SensorActivation;
@@ -459,7 +462,7 @@ CREATE TABLE TrackingLog(
   endPeriod DATE,
   FOREIGN KEY (officeID) REFERENCES Office(officeID)
 );
-INSERT INTO TrackingLog VALUES (1, 1000, '04-01-2022', '04-10-2022');
+INSERT INTO TrackingLog VALUES (1, 501, '04-01-2022', '04-10-2022');
 
 
 DROP TABLE IF EXISTS TrackByRoom;

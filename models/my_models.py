@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+# from typing import List
 
 
 class Degree(BaseModel):
@@ -13,7 +13,7 @@ class Degree(BaseModel):
 
 class Education(BaseModel):
   # employeeID: int
-  degrees: list[Degree] = []
+  degrees: list[Degree] # = []
 
 
 class Employee(BaseModel):
@@ -27,6 +27,7 @@ class Employee(BaseModel):
   date_hired: str
   phone: str
   dob: str
+  deleted: bool
 
 class Address(BaseModel):
   # employeeID: int
