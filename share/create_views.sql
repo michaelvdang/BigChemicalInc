@@ -53,7 +53,7 @@ JOIN Building b                 ON d.buildingID=b.buildingID
 JOIN EmployeeBadge eb           ON eb.badgeID=sa.badgeID
 JOIN Employee e                 ON eb.employeeID=e.employeeID
 WHERE e.deleted=false
-ORDER BY e.name, date
+ORDER BY sa.time ASC , sa.direction ASC
 ;
 -- WHERE date BETWEEN '04-13-2022' AND '04-14-2022'
 -- ORDER BY date;

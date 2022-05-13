@@ -45,7 +45,8 @@ def get_employee_info(employeeID: int,
                                 [employeeID]).fetchall()
     return {'employee_info': employee_info, 'employee_education': employee_education}
   else:
-    return {Response(None, status_code=404)}
+    return {'employee_info' : 404}
+    # return {Response(None, status_code=404)}
   row = db.execute('SELECT * FROM v_EmployeeInfo WHERE employeeID=?', 
                   [employeeID]).fetchone()
   e = Employee(
@@ -138,7 +139,7 @@ def update_employee_info(employeeID: int,
   return Response(None, status_code=204)
 
 
-@app.post("/employees/{employeeID}")
+@app.post("/employees")
 def add_employee_info(employee: Employee,
                  address: Address,
                  education: Education,
@@ -340,14 +341,17 @@ def add_sensor_repair_info(sensor_repair: SensorRepair,
 @app.get("/tracking-log/{employeeID}")#?startDate={startDate}&endDate={endDate}")
 def get_tracking_log(employeeID: int, 
                           startDate: str,
-                          endDate: str,
+                          startTime: str,
+                          # endDate: str,
+                          endTime: str,
                           db: sqlite3.Connection = Depends(get_db)):
   accesses = db.execute("""SELECT * 
                             FROM v_EmployeeAccess 
                             WHERE employeeID=?
-                            AND date 
-                            BETWEEN ? AND ?""",
-                          [employeeID, startDate, endDate])
+                            AND date BETWEEN ? AND ?
+                            AND time BETWEEN ? AND ?
+                            """,
+                          [employeeID, startDate, startDate, startTime, endTime])
   office_info = db.execute('''SELECT o.officeID AS officeID, o.phone, cellPhone 
                               FROM Employee e
                               JOIN TrackingLog tl ON tl.employeeID=e.employeeID
