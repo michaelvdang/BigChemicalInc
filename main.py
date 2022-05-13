@@ -3,7 +3,7 @@ from typing import Optional, List
 import sqlite3
 from fastapi import Body, FastAPI, Depends, Response
 from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 import contextlib
 from models.my_models import Degree, Education, Employee, Address, SensorRepair, Sensor, DrugTest
 
@@ -11,6 +11,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:4200",
+    # "localhost:4200",
     # "http://localhost:*",
     # "http://127.0.0.1:4200"
 ]
@@ -19,7 +20,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     # allow_credentials=True,
-    allow_methods=["PATCH"], # does this work ?
+    allow_methods=["POST"], # does this work ?
     # allow_headers=["*"],
 )
 
@@ -198,7 +199,7 @@ def delete_employee(employeeID: int, db: sqlite3.Connection = Depends(get_db)):
 
 # get employee test results
 # must create TestResult class
-@app.get("/employees/{employeeID}/drug-test-results/")
+@app.get("/employees/{employeeID}/drug-test-results")
 def get_employee_drug_test_result(employeeID: int, db: sqlite3.Connection = Depends(get_db)):
   rows = db.execute("SELECT * FROM v_DrugTestResult WHERE employeeID=?", 
                   [employeeID]).fetchall()
@@ -230,7 +231,7 @@ def update_employee_drug_test_result(employeeID: int,
     return "ERROR: SQLite Integrity Error"
   return Response(None, status_code=204)
 
-@app.post("/employees/{employeeID}/drug-test-results/")
+@app.post("/employees/{employeeID}/drug-test-results")
 def add_employee_drug_test_result(employeeID: int,
                                   drugtest: DrugTest, 
                                   db: sqlite3.Connection = Depends(get_db)):
@@ -279,7 +280,7 @@ def update_sensor_info(sensorID: int,
 def add_sensor_info(sensor: Sensor,
                     db: sqlite3.Connection = Depends(get_db)):
   try:
-    db.execute('INSERT INTO Sensor VALUES (?,?,?,?)',
+    db.execute('INSERT INTO Sensor VALUES (?,?,?,?, false)',
         [
           sensor.sensorID,
           sensor.doorID,
