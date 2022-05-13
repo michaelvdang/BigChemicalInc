@@ -98,21 +98,21 @@ CREATE TABLE DrugTest(
   date DATE,
   lab_used TEXT,
   test_used TEXT,
-  results BOOLEAN,
+  results VARCHAR(7),
   comments TEXT,
   PRIMARY KEY (employeeID, labTestID)
 );
-INSERT INTO DrugTest VALUES (1, 51, '04-20-2022', 'THE LAB', 'Urine test', 0, 
+INSERT INTO DrugTest VALUES (1, 51, '04-20-2022', 'THE LAB', 'Urine test', 'Clear', 
   'No comment');
-INSERT INTO DrugTest VALUES (1, 52, '04-21-2022', 'THE LAB', 'Urine test', 0, 
+INSERT INTO DrugTest VALUES (1, 52, '04-21-2022', 'THE LAB', 'Urine test', 'Clear', 
   'No comment');
-INSERT INTO DrugTest VALUES (1, 53, '04-22-2022', 'THE LAB', 'Urine test', 1, 
+INSERT INTO DrugTest VALUES (1, 53, '04-22-2022', 'THE LAB', 'Urine test', 'Fail', 
   'Tested positive');
-INSERT INTO DrugTest VALUES (2, 54, '04-21-2022', 'THE LAB', 'Urine test', 1, 
+INSERT INTO DrugTest VALUES (2, 54, '04-21-2022', 'THE LAB', 'Urine test', 'Caution', 
   'Tested positive');
-INSERT INTO DrugTest VALUES (2, 55, '04-22-2022', 'THE LAB', 'Urine test', 1, 
+INSERT INTO DrugTest VALUES (2, 55, '04-22-2022', 'THE LAB', 'Urine test', 'Caution', 
   'Tested positive');
-INSERT INTO DrugTest VALUES (2, 56, '04-23-2022', 'THE LAB', 'Urine test', 1, 
+INSERT INTO DrugTest VALUES (2, 56, '04-23-2022', 'THE LAB', 'Urine test', 'Caution', 
   'Tested positive');
 
 
